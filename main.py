@@ -15,7 +15,7 @@ def convert(target_lang):
                 try:
                     translated = translator.translate(splited[1], dest=target_lang)
                     translated_text = splited[0] + "=" + translated.text
-                except IndexError as ie:
+                except RuntimeError as ie:
                     translated_text = splited[0] + "="
 
             print(str(i) + '> ' + translated_text)
