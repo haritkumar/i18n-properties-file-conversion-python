@@ -6,23 +6,40 @@ def convert(target_lang):
     translator = Translator()
     relative_path = os.path.abspath(os.path.dirname(__file__))
     fw = open(relative_path + '/files/translations/' + target_lang + '.properties', "w", encoding="utf-8")
+    temp_key = [];
+    temp_value = [];
     with open(relative_path + '/files/en.properties') as f:
         i = 1
         for line in f:
-            splited = line.split('=')
-            translated_text = ''
-            if len(splited) == 2:
+            if line.strip() != '':
+                splited = line.split('=')
                 try:
-                    translated = translator.translate(splited[1], dest=target_lang)
-                    translated_text = splited[0] + "=" + translated.text
-                except RuntimeError as ie:
-                    translated_text = splited[0] + "="
-
-            print(str(i) + '> ' + translated_text)
-            fw.write(translated_text + "\n")
+                    temp_value.append(splited[1].strip())
+                    temp_key.append(splited[0].strip())
+                except IndexError as re:
+                    temp_value.append('')
+                    temp_key.append(splited[0].strip())
+            if (i % 50) == 0:
+                call_string = ''
+                for x in temp_value:
+                    call_string = call_string + x + '\n'
+                translated = translator.translate(call_string, target_lang)
+                print(translated.text.split('\n'))
+                for k, v in zip(temp_key, translated.text.split('\n')):
+                    fw.write(k + '=' + v + '\n')
+                temp_key = []
+                temp_value = []
             i = i + 1
+
+    call_string = ''
+    for x in temp_value:
+        call_string = call_string + x + '\n'
+    translated = translator.translate(call_string, target_lang)
+
+    for k, v in zip(temp_key, translated.text.split('\n')):
+        fw.write(k + '=' + v + '\n')
     fw.close()
 
 
 if __name__ == '__main__':
-    convert('hi')
+    convert('ja')
