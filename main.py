@@ -35,7 +35,7 @@ def convert(target_lang):
     for x in temp_value:
         call_string = call_string + x + '\n'
     translated = translator.translate(call_string, target_lang)
-
+    print(translated.text.split('\n'))
     for k, v in zip(temp_key, translated.text.split('\n')):
         fw.write(k + '=' + v + '\n')
     fw.close()
